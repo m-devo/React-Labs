@@ -9,7 +9,7 @@ const TodoList = ({ todos, onDelete, onToggle }: TodoListProps) => {
   return (
     <div className="bg-white p-8 rounded-b-lg shadow-md">
       <h2 className="text-center text-gray-500 mb-6 text-lg">
-        Let's get some work done!
+        Let's Add Tasks
       </h2>
 
       <div className="space-y-3">
@@ -44,10 +44,6 @@ const TodoList = ({ todos, onDelete, onToggle }: TodoListProps) => {
             </div>
           ))
         )}
-      </div>
-      
-      <div className="mt-8 text-center text-xs text-gray-400">
-        Proudly powered by Cosmic JS (Clone)
       </div>
     </div>
   )
