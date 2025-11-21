@@ -12,15 +12,16 @@ const [text, setText] = useState("");
     if (trimmedText === "") {
       Swal.fire({
         title: "Error!",
-        text: "Task cannot be  embty! Please write a real task.",
+        text: "Task cannot be embty! Please write a real task.",
         icon: "error",
         confirmButtonText: "OK",
         confirmButtonColor: "green"
       });
       return; 
     }; 
+    const numbersRegex = /^\d+$/;
 
-    if (!isNaN(Number(trimmedText))) {
+    if (!isNaN(Number(trimmedText)) && numbersRegex.test(trimmedText)) {
       Swal.fire({
         title: "Error!",
         text: "Task cannot be numbers only! Please add a valid task.",
@@ -29,6 +30,17 @@ const [text, setText] = useState("");
         confirmButtonColor: "green"
       });
       return; 
+    }
+
+    if (trimmedText.length < 10) {
+      Swal.fire({
+        title: "Too Short!",
+        text: "Task must be at least 10 characters long.",
+        icon: "info",
+        confirmButtonText: "OK",
+        confirmButtonColor: "green"
+      });
+      return;
     }
     onAdd(text); 
     setText(""); 
