@@ -1,13 +1,35 @@
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 interface TodoInputProps {
   onAdd: (text: string) => void; 
 }
 const Todo = ({ onAdd }: TodoInputProps) => {
-  const [text, setText] = useState("");
+const [text, setText] = useState("");
 
   const inputFn = () => {
-    if (text.trim() === "") return; 
+    const trimmedText = text.trim();
+    if (trimmedText === "") {
+      Swal.fire({
+        title: "Error!",
+        text: "Task cannot be  embty! Please write a real task.",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "green"
+      });
+      return; 
+    }; 
+
+    if (!isNaN(Number(trimmedText))) {
+      Swal.fire({
+        title: "Error!",
+        text: "Task cannot be numbers only! Please add a valid task.",
+        icon: "error",
+        confirmButtonText: "OK",
+        confirmButtonColor: "green"
+      });
+      return; 
+    }
     onAdd(text); 
     setText(""); 
   };
