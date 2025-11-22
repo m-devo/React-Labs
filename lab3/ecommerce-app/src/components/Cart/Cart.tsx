@@ -5,7 +5,11 @@ import { Trash2, Minus, Plus } from 'lucide-react';
 const Cart = () => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
 
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const delivery = 50;
+
+  const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const finalTotal = subtotal + delivery;
 
   if (cartItems.length === 0) {
     return (
@@ -25,14 +29,11 @@ const Cart = () => {
           {cartItems.map((item) => (
             <div key={item.id} className="flex flex-col sm:flex-row items-center gap-4 bg-white p-4 
             rounded-xl border border-gray-100 shadow-sm">
-              
               <img src={item.thumbnail} className="w-20 h-20 object-contain bg-gray-50 rounded-md" alt={item.title} />
-              
               <div className="flex-grow text-center sm:text-left">
                 <h3 className="font-bold text-gray-800">{item.title}</h3>
                 <p className="text-gray-500 text-sm">{item.category}</p>
               </div>
-
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button 
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -41,9 +42,7 @@ const Cart = () => {
                 >
                   <Minus size={16} />
                 </button>
-                
                 <span className="px-4 font-medium w-12 text-center">{item.quantity}</span>
-                
                 <button 
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   className="p-2 hover:bg-gray-100 text-gray-600"
@@ -51,7 +50,6 @@ const Cart = () => {
                   <Plus size={16} />
                 </button>
               </div>
-
               <div className="text-right min-w-[80px]">
                 <p className="font-bold text-lg text-blue-600">${(item.price * item.quantity).toFixed(2)}</p>
                 <button 
@@ -67,19 +65,24 @@ const Cart = () => {
 
         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm h-fit">
           <h3 className="font-bold text-xl mb-4">Order Summary</h3>
+          
           <div className="flex justify-between mb-2 text-gray-600">
             <span>Subtotal</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${subtotal.toFixed(2)}</span>
           </div>
-           <div className="flex justify-between mb-4 text-gray-600">
-            <span>Tax (0%)</span>
-            <span>$0.00</span>
+
+          <div className="flex justify-between mb-4 text-gray-600">
+            <span>Delivery</span>
+            <span>${delivery.toFixed(2)}</span>
           </div>
+
           <hr className="my-4 border-gray-200" />
+          
           <div className="flex justify-between mb-6 text-xl font-bold text-gray-900">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${finalTotal.toFixed(2)}</span>
           </div>
+
           <button className="w-full bg-blue-600 text-white py-3 rounded-xl 
           font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-600/20">
             Checkout
