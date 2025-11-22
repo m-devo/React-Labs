@@ -12,7 +12,7 @@ const ProductsList = () => {
   const [totalProducts, setTotalProducts] = useState(0);
   const ITEMS_PER_PAGE = 12; 
 
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
 
   useEffect(() => {    
     const fetchProducts = async () => {
@@ -59,11 +59,14 @@ const ProductsList = () => {
           const stockStatus = getStockStatus(product.stock);
           const isOutOfStock = product.stock === 0;
 
+          const cartItem = cartItems.find((item) => item.id === product.id);
+          const currentQty = cartItem ? cartItem.quantity : 0;
+          const isMaxReached = currentQty >= product.stock;
+
           return (
             <div key={product.id} className="bg-white border border-gray-200 
             rounded-xl p-4 flex flex-col hover:shadow-lg transition relative group">
               
-              {/* Stock Badge */}
               <div className="absolute top-4 left-4 z-20">
                 <span className={`text-xs font-bold px-2 py-1 rounded-full ${stockStatus.color}`}>
                   {stockStatus.label}
@@ -87,19 +90,24 @@ const ProductsList = () => {
               </div>
 
               <button 
-                disabled={isOutOfStock} 
+                disabled={isOutOfStock || isMaxReached} 
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!isOutOfStock) addToCart(product);
+                  if (!isOutOfStock && !isMaxReached) addToCart(product);
                 }}
                 className={`mt-3 w-full py-2 rounded-lg font-bold transition flex 
                   justify-center items-center gap-2 relative z-20
-                ${isOutOfStock 
+                ${(isOutOfStock || isMaxReached)
                   ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  : 'bg-gray-900 text-white hover:bg-blue-600'
+                  : 'bg-gray-900 text-white hover:bg-blue-600' 
                 }`}
               >
-                {isOutOfStock ? 'Out of Stock' : <><ShoppingCart size={16} /> Add to Cart</>}
+                {isOutOfStock 
+                  ? 'Out of Stock' 
+                  : isMaxReached 
+                    ? 'Max Reached' 
+                    : <><ShoppingCart size={16} /> Add to Cart</>
+                }
               </button>
 
               <Link to={`/product/${product.id}`} className="absolute inset-0 z-10" />
