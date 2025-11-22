@@ -8,13 +8,13 @@ interface CartContextType {
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
   updateQuantity: (id: number, quantity: number) => void;
-  cartCount: number;
+  cartCount: number
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([])
 
 
   const Toast = Swal.mixin({
@@ -41,7 +41,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         });
         return prev.map((item) =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
+        )
       }
       
       Toast.fire({
@@ -73,10 +73,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           icon: "success",
           timer: 1500,
           showConfirmButton: false
-        });
+        })
       }
-    });
-  };
+    })
+  }
   const updateQuantity = (id: number, quantity: number) => {
     const currentItem = cartItems.find((item) => item.id === id);
 
