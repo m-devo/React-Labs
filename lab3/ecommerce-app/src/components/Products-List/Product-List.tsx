@@ -10,7 +10,7 @@ const ProductsList = () => {
   
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
-  const ITEMS_PER_PAGE = 12; 
+  const itemsPerPage = 12; 
 
   const { addToCart, cartItems } = useCart();
 
@@ -18,8 +18,8 @@ const ProductsList = () => {
     const fetchProducts = async () => {
       setLoading(true); 
       try {
-        const skip = (currentPage - 1) * ITEMS_PER_PAGE;
-        const res = await fetch(`https://dummyjson.com/products?limit=${ITEMS_PER_PAGE}&skip=${skip}`);
+        const skip = (currentPage - 1) * itemsPerPage;
+        const res = await fetch(`https://dummyjson.com/products?limit=${itemsPerPage}&skip=${skip}`);
         const data: ProductResponse = await res.json();
         
         setProducts(data.products);
@@ -36,7 +36,7 @@ const ProductsList = () => {
     fetchProducts();
   }, [currentPage]); 
 
-  const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalProducts / itemsPerPage);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
