@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom'; 
 import { ArrowLeft, ShoppingCart } from 'lucide-react';
 import type { Product } from '../../models/ProductModel';
-import { useCart } from '../Context/CartContext'; 
+import Swal from 'sweetalert2';
+
+import { useAppDispatch, useAppSelector } from '../../store/Hooks';
+import { addToCart } from '../../store/CartSlice';
+
+const apiURL = import.meta.env.VITE_API_BASE_URL;
 
 const ProductDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,10 +16,29 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   
-  const { addToCart, cartItems } = useCart(); 
+  const dispatch = useAppDispatch();
+  const cartItems = useAppSelector((state) => state.cart.items);
+
+  const handleAddToCart = (product: Product) => {
+    dispatch(addToCart(product)); 
+
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+    
+    Toast.fire({
+      icon: "success",
+      title: "Added to cart",
+      text: `${product.title} has been added`
+    });
+  };
 
   useEffect(() => {
-    fetch(`https://dummyjson.com/products/${id}`)
+    fetch(`${apiURL}/products/${id}`)
       .then(res => res.json())
       .then(data => {
         setProduct(data);
@@ -33,7 +57,8 @@ const ProductDetails = () => {
   const isMaxStockReached = product ? currentQuantityInCart >= product.stock : false;
   const isOutOfStock = product ? product.stock === 0 : true;
 
-  if (loading) return <div className="h-screen flex justify-center items-center"><div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 border-t-transparent"></div></div>;
+  if (loading) return <div className="h-screen flex justify-center items-center">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 border-t-transparent"></div></div>;
   if (!product) return <div className="text-center py-20 text-xl font-bold text-gray-500">Product not found</div>;
 
   return (
@@ -112,14 +137,14 @@ const ProductDetails = () => {
             </div>
 
             <div className="flex flex-col gap-3 mt-auto">
-               <button className="w-full bg-gray-900 text-white py-4 r
-               ounded-xl font-bold hover:bg-gray-800 transition shadow-lg flex items-center justify-center gap-2 text-lg">
+               <button className="w-full bg-gray-900 text-white py-4 
+               rounded-xl font-bold hover:bg-gray-800 transition shadow-lg flex items-center justify-center gap-2 text-lg">
                  Buy Now
                </button>
                
                <button 
                  onClick={() => {
-                    if (!isMaxStockReached) addToCart(product);
+                    if (!isMaxStockReached) handleAddToCart(product);
                  }}
                  disabled={isOutOfStock || isMaxStockReached}
                  className={`w-full border-2 border-gray-200 
